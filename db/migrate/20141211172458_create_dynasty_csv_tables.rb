@@ -1,4 +1,4 @@
-class CreateRankings < ActiveRecord::Migration
+class CreateDynastyCsvTables < ActiveRecord::Migration
   def change
     create_table :rankings do |t|
       t.integer :season_number
@@ -11,11 +11,6 @@ class CreateRankings < ActiveRecord::Migration
       t.float :fpv
       t.integer :points
     end
-  end
-end
-
-class CreateProspects < ActiveRecord::Migration
-  def change
     create_table :prospects do |t|
       t.integer :season_number
       t.string :first_name
@@ -75,11 +70,6 @@ class CreateProspects < ActiveRecord::Migration
       t.string :school_9
       t.string :school_10
     end
-  end
-end
-
-class CreateGames < ActiveRecord::Migration
-  def change
     create_table :games do |t|
       t.integer :week_number
       t.integer :season_number
@@ -101,11 +91,6 @@ class CreateGames < ActiveRecord::Migration
       t.integer :ot_home
       t.integer :ot_away
     end
-  end
-end
-
-class CreatePlayers < ActiveRecord::Migration
-  def change
     create_table :players do |t|
       t.integer :season_number
       t.string :first_name
@@ -171,11 +156,6 @@ class CreatePlayers < ActiveRecord::Migration
       t.integer :kick_power
       t.integer :kick_accuracy
     end
-  end
-end
-
-class CreateTeams < ActiveRecord::Migration
-  def change
     create_table :teams do |t|
       t.string :name
       t.string :conference
@@ -189,20 +169,11 @@ class CreateTeams < ActiveRecord::Migration
       t.integer :pointsfor
       t.float :winpercent
     end
-  end
-end
-
-class AddDynastyToUsers < ActiveRecord::Migration
-  def change
-    change_table :users do |t|
-      t.integer wins
-      t.integer losses
-      t.integer active_dynasties
-      t.integer seasons_completed
-      t.integer access_level
-      t.boolean played_game
-      t.integer recruiting_points
-      t.boolean auto_pilot
+    create_table :dynasties do |t|
+      t.integer :owner_id
+      t.string :name
+      t.integer :week_number
+      t.integer :season_number
     end
     add_reference :dynasties, :user, index: true
     add_reference :teams, :dynasty, index: true
@@ -212,16 +183,5 @@ class AddDynastyToUsers < ActiveRecord::Migration
     add_reference :games, :dynasty, index: true
     add_reference :rankings, :dynasty, index: true
     add_reference :teams, :user, index: true
-  end
-end
-
-class CreateDynasties < ActiveRecord::Migration
-  def change
-    create_table :dynasties do |t|
-      t.integer :owner_id
-      t.string :name
-      t.integer :week_number
-      t.integer :season_number
-    end
   end
 end
