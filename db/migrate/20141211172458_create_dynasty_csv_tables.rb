@@ -158,6 +158,7 @@ class CreateDynastyCsvTables < ActiveRecord::Migration
     end
     create_table :teams do |t|
       t.string :name
+      t.integer :season_number
       t.string :conference
       t.string :coach_id
       t.string :conference_record

@@ -199,6 +199,7 @@ ActiveRecord::Schema.define(version: 20141211172458) do
 
   create_table "teams", force: true do |t|
     t.string  "name"
+    t.integer "season_number"
     t.string  "conference"
     t.string  "coach_id"
     t.string  "conference_record"
