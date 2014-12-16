@@ -34,6 +34,7 @@ group :development, :test do
   gem 'faker'
   gem 'rspec-rails'
   gem 'sqlite3'
+  gem 'pg'
 end
 group :production do
   gem 'pg'
