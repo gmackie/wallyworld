@@ -1,10 +1,7 @@
-class UsersController < ApplicationController
-  before_filter :authenticate_user!
-  after_action :verify_authorized
+class TeamsController < ApplicationController
 
   def index
-    @team = Team.all
-    authorize User
+    @teams = Team.all
   end
 
   def show

@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="row">
+    <h3>Teams</h3>
+    <div class="column">
+      <table class="table" id=example class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>User</th>
+            <th>Coach</th>
+            <th>Wins</th>
+            <th>Losses</th>
+            <th>Conference</th>
+            <th>Conference Record</th>
+            <th>Division Standing</th>
+            <th>Points For</th>
+            <th>Points Against</th>
+            <th>Winning %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @teams.each do |team| %>
+            <tr>
+              <%= render team %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

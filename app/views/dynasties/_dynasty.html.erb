@@ -1,0 +1,13 @@
+<td>
+  <%= link_to dynasty.name, dynasty %>
+</td>
+<td>
+  <%= form_for(dynasty) do |f| %>
+    <%= f.select(:season_number, (1..10).each do |num| [num, num.to_s] end) %>
+    <%= f.select(:week_number, (1..14).each do |num| [num, num.to_s] end) %>
+    <%= f.submit 'Update', :class => 'button-xs' %>
+  <% end %>
+</td>
+<td>
+  <%= link_to("Delete dynasty", dynasty_path(dynasty), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'button-xs') unless dynasty.user == current_user %>
+</td>

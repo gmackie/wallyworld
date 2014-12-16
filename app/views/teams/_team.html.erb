@@ -1,0 +1,11 @@
+<td><%= link_to team.name, team %></td>
+<td><%= link_to team.user.email, team.user unless team.user.nil?%></td>
+<td><%= team.coach_id %></td>
+<td><%= team.wins %></td>
+<td><%= team.losses %></td>
+<td><%= team.conference %></td>
+<td><%= team.conference_record %></td>
+<td><%= team.division_standing %></td>
+<td><%= team.pointsfor %></td>
+<td><%= team.pointsagainst %></td>
+<td><%= team.winpercent %></td>

@@ -1,0 +1,5 @@
+<h3>Dynasty</h3>
+<p>Name: <%= @dynasty.name if @dynasty.name %></p>
+<p>Owner: <%= link_to @dynasty.user.email, @dynasty.user if @dynasty.user %></p>
+<p>Season: <%= @dynasty.season_number if @dynasty.season_number %></p>
+<p>Week: <%= @dynasty.week_number if @dynasty.week_number %></p>
