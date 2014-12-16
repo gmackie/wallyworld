@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20141211172458) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "dynasties", force: true do |t|
     t.integer "owner_id"
     t.string  "name"
@@ -21,7 +24,7 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "user_id"
   end
 
-  add_index "dynasties", ["user_id"], name: "index_dynasties_on_user_id"
+  add_index "dynasties", ["user_id"], name: "index_dynasties_on_user_id", using: :btree
 
   create_table "games", force: true do |t|
     t.integer "week_number"
@@ -46,7 +49,7 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "dynasty_id"
   end
 
-  add_index "games", ["dynasty_id"], name: "index_games_on_dynasty_id"
+  add_index "games", ["dynasty_id"], name: "index_games_on_dynasty_id", using: :btree
 
   create_table "players", force: true do |t|
     t.integer "season_number"
@@ -116,8 +119,8 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "team_id"
   end
 
-  add_index "players", ["dynasty_id"], name: "index_players_on_dynasty_id"
-  add_index "players", ["team_id"], name: "index_players_on_team_id"
+  add_index "players", ["dynasty_id"], name: "index_players_on_dynasty_id", using: :btree
+  add_index "players", ["team_id"], name: "index_players_on_team_id", using: :btree
 
   create_table "prospects", force: true do |t|
     t.integer "season_number"
@@ -130,43 +133,43 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "weight"
     t.integer "rank"
     t.string  "hometown"
-    t.integer "speed_base"
-    t.integer "strength_base"
-    t.integer "agility_base"
-    t.integer "acceleration_base"
-    t.integer "jumping_base"
-    t.integer "awareness_base"
-    t.integer "stamina_base"
-    t.integer "injury_base"
-    t.integer "break_tackle_rushing"
-    t.integer "trucking_rushing"
-    t.integer "elusiveness_rushing"
-    t.integer "stiff_arm_rushing"
-    t.integer "spin_move_rushing"
-    t.integer "juke_move_rushing"
-    t.integer "carrying_rushing"
-    t.integer "pass_block_blocking"
-    t.integer "run_block_blocking"
-    t.integer "impact_blocking_blocking"
-    t.integer "catching_receiving"
-    t.integer "spectacular_catch_receiving"
-    t.integer "catch_in_traffic_receiving"
-    t.integer "route_running_receiving"
-    t.integer "release_receiving"
-    t.integer "tackle_tackling"
-    t.integer "hit_power_tackling"
-    t.integer "pursuit_tackling"
-    t.integer "play_recognition_tackling"
-    t.integer "power_moves_blockingshedding"
-    t.integer "finesse_moves_blockingshedding"
-    t.integer "block_shedding_blockingshedding"
-    t.integer "man_coverage_coverage"
-    t.integer "zone_coverage_coverage"
-    t.integer "press_coverage"
-    t.integer "throw_power_passing"
-    t.integer "throw_accuracy_passing"
-    t.integer "kick_power_kicking"
-    t.integer "kick_accuracy_kicking"
+    t.string  "speed_base"
+    t.string  "strength_base"
+    t.string  "agility_base"
+    t.string  "acceleration_base"
+    t.string  "jumping_base"
+    t.string  "awareness_base"
+    t.string  "stamina_base"
+    t.string  "injury_base"
+    t.string  "break_tackle_rushing"
+    t.string  "trucking_rushing"
+    t.string  "elusiveness_rushing"
+    t.string  "stiff_arm_rushing"
+    t.string  "spin_move_rushing"
+    t.string  "juke_move_rushing"
+    t.string  "carrying_rushing"
+    t.string  "pass_block_blocking"
+    t.string  "run_block_blocking"
+    t.string  "impact_blocking_blocking"
+    t.string  "catching_receiving"
+    t.string  "spectacular_catch_receiving"
+    t.string  "catch_in_traffic_receiving"
+    t.string  "route_running_receiving"
+    t.string  "release_receiving"
+    t.string  "tackle_tackling"
+    t.string  "hit_power_tackling"
+    t.string  "pursuit_tackling"
+    t.string  "play_recognition_tackling"
+    t.string  "power_moves_blockingshedding"
+    t.string  "finesse_moves_blockingshedding"
+    t.string  "block_shedding_blockingshedding"
+    t.string  "man_coverage_coverage"
+    t.string  "zone_coverage_coverage"
+    t.string  "press_coverage"
+    t.string  "throw_power_passing"
+    t.string  "throw_accuracy_passing"
+    t.string  "kick_power_kicking"
+    t.string  "kick_accuracy_kicking"
     t.string  "school_1"
     t.string  "school_2"
     t.string  "school_3"
@@ -180,7 +183,7 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "dynasty_id"
   end
 
-  add_index "prospects", ["dynasty_id"], name: "index_prospects_on_dynasty_id"
+  add_index "prospects", ["dynasty_id"], name: "index_prospects_on_dynasty_id", using: :btree
 
   create_table "rankings", force: true do |t|
     t.integer "season_number"
@@ -195,7 +198,7 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "dynasty_id"
   end
 
-  add_index "rankings", ["dynasty_id"], name: "index_rankings_on_dynasty_id"
+  add_index "rankings", ["dynasty_id"], name: "index_rankings_on_dynasty_id", using: :btree
 
   create_table "teams", force: true do |t|
     t.string  "name"
@@ -214,8 +217,8 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.integer "user_id"
   end
 
-  add_index "teams", ["dynasty_id"], name: "index_teams_on_dynasty_id"
-  add_index "teams", ["user_id"], name: "index_teams_on_user_id"
+  add_index "teams", ["dynasty_id"], name: "index_teams_on_dynasty_id", using: :btree
+  add_index "teams", ["user_id"], name: "index_teams_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -246,7 +249,7 @@ ActiveRecord::Schema.define(version: 20141211172458) do
     t.boolean  "auto_pilot"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
