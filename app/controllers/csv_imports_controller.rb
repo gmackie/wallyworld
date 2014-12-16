@@ -10,13 +10,28 @@ class CsvImportsController < ApplicationController
 
   end
 
-  def import_csvs
-    dynasty = params[:dynasty_id]
-    season = params[:season_num]
-    week = params[:week_num]
-    csv_string = params[:csv_string]
+  def self.csv_path(csv_string, report_string)
+    return "/home/mackieg/Downloads/dynasty/" + report_string + "_" + csv_string + ".csv"
+  end
+
+  def self.import_csvs
+    #dynasty = params[:dynasty_id]
+    #season = params[:season_num]
+    #week = params[:week_num]
+    #csv_string = params[:csv_string]
+    dynasty = 1
+    season = 2
+    week = 10
+    csv_string = "Hacksaw8DU2015"
+    first_import = true
+    prospect_csv = csv_path(csv_string,  "Prospects")
+    player_roster_csv = csv_path(csv_string,  "TeamRoster")
+    game_csv = csv_path(csv_string,  "Schedule")
+    player_stats_csv = csv_path(csv_string,  "Stats")
+    ranking_csv = csv_path(csv_string,  "PollRankings")
+
     if (week == 0 || first_import)
-      import_teams(season, dynasty, team_csv)
+      import_teams(season, dynasty, csv_path(csv_string,"TeamStandings"))
       import_prospects(season, dynasty, prospect_csv)
       import_players(season, dynasty, player_roster_csv)
     end
@@ -49,15 +64,16 @@ class CsvImportsController < ApplicationController
     end
   end
   
-  def import_rankings(season, dynasty, week, csv_upload)
-    csv = CSV.new(csv_upload, 
-            :headers => true, 
-            :converters => :all)
-    csv.to_a.map {|row| row.to_hash }.each do |row|
+  def self.import_rankings(season, dynasty, week, csv_upload)
+    CSV.foreach(csv_upload, 
+        :headers => true, 
+        :converters => :all)  do |row|
+      team_id = Team.find_by_name(row["TeamName"]).id
       Ranking.create(
         dynasty_id: dynasty,
         season_number: season,
         week_number: week,
+        team_id: team_id,
         poll_name: row["PollName"],
         rank: row["Rank"],
         previous_rank: row["PreviousRank"],
@@ -69,13 +85,15 @@ class CsvImportsController < ApplicationController
     end
   end
   
-  def import_prospects(season, dynasty, csv_upload)
-    csv = CSV.new(csv_upload, 
-            :headers => true, 
-            :converters => :all)
-    csv.to_a.map {|row| row.to_hash }.each do |row|
+  def self.import_prospects(season, dynasty, csv_upload)
+    CSV.foreach(csv_upload, 
+        :headers => true, 
+        :converters => :all)  do |row|
+      player_name = row["Name"].split(" ")
+      first_name  = player_name[0]
+      last_name   = player_name[1]
       Prospect.create(
-        dynsasty_id: dynasty,
+        dynasty_id: dynasty,
         season_number: season,
         first_name: first_name,                        
         last_name: last_name,                        
@@ -123,33 +141,34 @@ class CsvImportsController < ApplicationController
         throw_accuracy_passing: row["Throw Accuracy(passing)"],          
         kick_power_kicking: row["Kick Power(kicking)"],              
         kick_accuracy_kicking: row["Kick Accuracy(kicking)"],           
-        school_1: row["School1"],
-        school_2: row["School2"],
-        school_3: row["School3"],
-        school_4: row["School4"],
-        school_5: row["School5"],
-        school_6: row["School6"],
-        school_7: row["School7"],
-        school_8: row["School8"],
-        school_9: row["School9"],
-        school_10: row["School10"]
+        school_1: row["School 1"],
+        school_2: row["School 2"],
+        school_3: row["School 3"],
+        school_4: row["School 4"],
+        school_5: row["School 5"],
+        school_6: row["School 6"],
+        school_7: row["School 7"],
+        school_8: row["School 8"],
+        school_9: row["School 9"],
+        school_10: row["School 10"]
       )
     end
   end
   
-  def import_games(dynasty, season, week, csv_upload)
-    csv = CSV.new(csv_upload, 
-            :headers => true, 
-            :converters => :all)
-    csv.to_a.map {|row| row.to_hash }.each do |row|
-      home_team_id = Team.find_by_name(row["HomeTeam"])
-      away_team_id = Team.find_by_name(row["AwayTeam"])
+  def self.import_games(season, dynasty, week, csv_upload)
+    CSV.foreach(csv_upload, 
+        :headers => true, 
+        :converters => :all)  do |row|
+      home_team_id = Team.find_by_name(row["HomeTeam"]).id
+      # nil id if we play FCS teams...
+      away_team_id = Team.find_by_name(row["AwayTeam"]).id unless Team.find_by_name(row["AwayTeam"]).nil? 
+      week_arr = row["WeekNum"].split(' ')
       winner_id = (row["HomeScore"] > row["AwayScore"]) ? home_team_id : away_team_id
       loser_id  = (row["HomeScore"] < row["AwayScore"]) ? home_team_id : away_team_id
       Game.create(
         dynasty_id: dynasty,
         season_number: season,
-        week_number: week,
+        week_number: week_arr[1].to_i,
         home_team_id: home_team_id,
         away_team_id: away_team_id,
         home_score: row["HomeScore"],
@@ -170,14 +189,14 @@ class CsvImportsController < ApplicationController
     end
   end
   
-  def import_players(dynasty, season, csv_upload)
-    csv = CSV.new(csv_upload, 
-            :headers => true, 
-            :converters => :all)
-    csv.to_a.map {|row| row.to_hash }.each do |row|
+  def self.import_players(dynasty, season, csv_upload)
+    CSV.foreach(csv_upload, 
+        :headers => true, 
+        :converters => :all)  do |row|
       team_id = Team.find_by_name(row["TeamName"])
       Player.create(
-        season_number: season_number,
+        dynasty_id: dynasty,
+        season_number: season,
         team_id: team_id,           
         first_name: row["First Name"],         
         last_name: row["Last Name"],          
@@ -227,15 +246,14 @@ class CsvImportsController < ApplicationController
   end
   
   
-  def update_players_stats(dynasty, season, csv_upload)
-    #csv = CSV.new(csv_upload, 
+  def self.update_players_stats(dynasty, season, csv_upload)
+    #CSV.foreach(csv_upload, 
     #        :headers => true, 
     #        :header_converters => :symbol, 
     #        :converters => :all)
-    csv = CSV.new(csv_upload, 
-            :headers => true, 
-            :converters => :all)
-    csv.to_a.map {|row| row.to_hash }.each do |row|
+    CSV.foreach(csv_upload, 
+        :headers => true, 
+        :converters => :all)  do |row|
       player_name = row["Name"].split(" ")
       first_name  = player_name[0]
       last_name   = player_name[1]
